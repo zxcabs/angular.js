@@ -28,6 +28,23 @@ function parseHeaders(headers) {
   return parsed;
 }
 
+/**
+ * Normalize headers keys to lower case
+ *
+ * @param {Object} headers Headers as a object
+ * @returns {Object} Normalize headers
+ */
+function normalizeHeaders(headers) {
+  var ret = {};
+
+  if (!headers) return ret;
+
+  forEach(headers, function (val, key) {
+    ret[lowercase(key)] = val;
+  });
+
+  return ret;
+}
 
 /**
  * Returns a function that provides access to parsed headers.
@@ -42,10 +59,14 @@ function parseHeaders(headers) {
  *   - if called with no arguments returns an object containing all headers.
  */
 function headersGetter(headers) {
-  var headersObj = isObject(headers) ? headers : undefined;
+  var isNeedNormalize = true,
+      headersObj = isObject(headers) ? headers : undefined;
 
   return function(name) {
-    if (!headersObj) headersObj =  parseHeaders(headers);
+    if (isNeedNormalize) {
+      headersObj = headersObj ? normalizeHeaders(headersObj) : parseHeaders(headers);
+      isNeedNormalize = false;
+    }
 
     if (name) {
       return headersObj[lowercase(name)] || null;

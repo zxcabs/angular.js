@@ -658,6 +658,27 @@ describe('$http', function() {
       });
     });
 
+    describe('normalize headers', function() {
+
+      it('should normalize object keys to lower case', function() {
+        expect(normalizeHeaders({'Connection': 'Keep-Alive'})).toEqual({'connection': 'Keep-Alive'});
+      });
+    });
+
+    describe('headers getter', function() {
+
+      describe('as string', function() {
+        it('should normalize keys to lower case', function() {
+          expect(headersGetter('Connection: Keep-Alive')('connection')).toBe('Keep-Alive');
+        });
+      });
+
+      describe('as object', function() {
+        it('should normalize keys to lower case', function() {
+          expect(headersGetter({'Connection': 'Keep-Alive'})('connection')).toBe('Keep-Alive');
+        });
+      });
+    });
 
     describe('request headers', function() {
 
